@@ -1,5 +1,5 @@
 # Zooming-Slow-Mo (CVPR-2020)
-"Zooming Slow-Mo" is a fast and accurate one-stage space-time video super-resolution (STVSR) framework.
+This is the official Pytorch implementation of Zooming Slow-Mo: Fast and Accurate One-Stage Space-Time Video Super-Resolution.
 
 *This repo is currently under construction. The complete version of code will be released by June. 14, 2020*
 
