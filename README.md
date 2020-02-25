@@ -3,6 +3,7 @@ This is the official Pytorch implementation of Zooming Slow-Mo: Fast and Accurat
 
 *This repo is currently under construction. The complete version of code will be released by June. 14, 2020*
 
+[![Watch the video](dump/demo_thumbnail.PNG)](https://youtu.be/8mgD8JxBOus)
 
 ## Citations
 If you find the code helpful in your resarch or work, please cite the following papers.
