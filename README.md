@@ -22,4 +22,12 @@ If you find the code helpful in your resarch or work, please cite the following 
   month = {June},
   year = {2020}
 }
+
+@InProceedings{wang2019edvr,
+  author    = {Wang, Xintao and Chan, Kelvin C.K. and Yu, Ke and Dong, Chao and Loy, Chen Change},
+  title     = {EDVR: Video restoration with enhanced deformable convolutional networks},
+  booktitle = {The IEEE Conference on Computer Vision and Pattern Recognition Workshops (CVPRW)},
+  month     = {June},
+  year      = {2019},
+}
 ```
