@@ -1,7 +1,11 @@
 # Zooming-Slow-Mo (CVPR-2020)
-This is the official Pytorch implementation of Zooming Slow-Mo: Fast and Accurate One-Stage Space-Time Video Super-Resolution.
+This is the official Pytorch implementation of *Zooming Slow-Mo: Fast and Accurate One-Stage Space-Time Video Super-Resolution*.
+
+---
 
 *This repo is currently under construction. The complete version of code will be released by June. 14, 2020*
+
+By [Xiaoyu Xiang](https://engineering.purdue.edu/people/xiaoyu.xiang.1), [Yapeng Tian](http://yapengtian.org/) (equally contributed), [Yulun Zhang](http://yulunzhang.com/), [Yun Fu](http://www1.ece.neu.edu/~yunfu/), [Jan P. Allebach](https://engineering.purdue.edu/~allebach/), [Chenliang Xu](https://www.cs.rochester.edu/~cxu22/)
 
 [![Watch the video](dump/demo_thumbnail.PNG)](https://youtu.be/8mgD8JxBOus)
 
