@@ -21,6 +21,8 @@ By [Xiaoyu Xiang<sup>*</sup>](https://engineering.purdue.edu/people/xiaoyu.xiang
 
 ## Pretrained Models
 
+Our pretrained model can be downloaded via [GitHub](https://github.com/Mukosame/Zooming-Slow-Mo-CVPR-2020/blob/master/experiments/pretrained_models/xiang2020zooming.pth) or [Google Drive](https://drive.google.com/open?id=1xeOoZclGeSI1urY6mVCcApfCqOPgxMBK).
+
 ## Get Started
 ### Installation 
 
@@ -28,13 +30,23 @@ By [Xiaoyu Xiang<sup>*</sup>](https://engineering.purdue.edu/people/xiaoyu.xiang
 
 
 ### Testing
+We provide the test code for both standard test sets (Vid4, SPMC, etc.) and custom images. 
 
+You can change the input path, number of frames, etc. in [test.py](codes/test.py).
+
+- Test the model:
+```bash
+cd codes
+python test.py
+```
+
+- The test results will be saved to a folder here: `./results/your_data_name/`.
 
 
 ## Citations
 If you find the code helpful in your resarch or work, please cite the following papers.
 ```
-@InProceedings{Xiang2020ZoomingSlowMo,
+@InProceedings{xiang2020zooming,
   author = {Xiang, Xiaoyu and Tian, Yapeng and Zhang, Yulun and Fu, Yun and Jan, Allebach and Xu, Chenliang},
   title = {Zooming Slow-Mo: Fast and Accurate One-Stage Space-Time VideoSuper-Resolution},
   booktitle = {The IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
@@ -58,3 +70,9 @@ If you find the code helpful in your resarch or work, please cite the following 
   year      = {2019},
 }
 ```
+
+## License
+This project is released under the [GNU General Public License v3.0](https://github.com/Mukosame/Zooming-Slow-Mo-CVPR-2020/blob/master/LICENSE).
+
+## Acknowledgments
+Our code is inspired by [TDAN-VSR](https://github.com/YapengTian/TDAN-VSR) and [EDVR](https://github.com/xinntao/EDVR).
