@@ -14,7 +14,6 @@ import torch
 import utils.util as util
 import data.util as data_util
 import models.modules.Sakuya_arch as Sakuya_arch
-import timeit
 
 def test_index_generation(skip, N_out, length_ori):
     '''
@@ -55,9 +54,9 @@ def test_index_generation(skip, N_out, length_ori):
 
 def main():
     scale = 4
-    N_ot = 5#3
+    N_ot = 7 #3
     N_in = 1+ N_ot // 2
-    os.environ['CUDA_VISIBLE_DEVICES'] = '1'
+    os.environ['CUDA_VISIBLE_DEVICES'] = '0'
 
     #### model 
     #### TODO: change your model path here
@@ -65,14 +64,14 @@ def main():
     model = Sakuya_arch.LunaTokis(64, N_ot, 8, 5, 40)
 
     #### dataset
-    data_mode = 'Custom'#'Vid4' #'SPMC'#'Middlebury'#
+    data_mode = 'Custom' #'Vid4' #'SPMC'#'Middlebury'#
 
     if data_mode == 'Vid4':
         test_dataset_folder = '/data/xiang/SR/Vid4/LR/*'
     if data_mode == 'SPMC':
         test_dataset_folder = '/data/xiang/SR/spmc/*'
     if data_mode == 'Custom':
-        test_dataset_folder = '/data/xiang/SR/Custom/new_test/LR/*' # TODO: put your own data path here
+        test_dataset_folder = '../test_example/*' # TODO: put your own data path here
 
     #### evaluation
     flip_test = False #True#
@@ -80,7 +79,7 @@ def main():
 
     # temporal padding mode
     padding = 'replicate'
-    save_imgs = False#True#
+    save_imgs = False #True#
     if 'Custom' in data_mode: save_imgs = True
     ############################################################################
     if torch.cuda.is_available():
@@ -149,7 +148,7 @@ def main():
     avg_psnr_l = []
     avg_psnr_y_l = []
     sub_folder_name_l = []
-    total_time = []
+    # total_time = []
     # for each sub-folder
     for sub_folder in sub_folder_l:
         gt_tested_list = []
@@ -190,17 +189,13 @@ def main():
         else:
             select_idx_list = test_index_generation(skip, N_ot, len(img_LR_l))
         # process each image
-        for select_idxs in select_idx_list:#img_idx, img_path in enumerate(img_LR_l):
+        for select_idxs in select_idx_list:
             # get input images
             select_idx = select_idxs[0]
             gt_idx = select_idxs[1]
             imgs_in = imgs.index_select(0, torch.LongTensor(select_idx)).unsqueeze(0).to(device)
 
-            # imgs_gt = imgs_gts.index_select(0, torch.LongTensor(gt_idx)).unsqueeze(0).to(device)
-            start = timeit.default_timer()
             output = single_forward(model, imgs_in)
-            end = timeit.default_timer()
-            total_time.append(end-start)
 
             outputs = output.data.float().cpu().squeeze(0)            
 
@@ -278,9 +273,9 @@ def main():
         logger.info('Total Average PSNR: {:.6f} dB PSNR-Y: {:.6f} dB for {} clips. '
                     .format(
                         sum(avg_psnr_l) / len(avg_psnr_l), sum(avg_psnr_y_l) / len(avg_psnr_y_l), len(sub_folder_l)))
-        logger.info('Total Runtime: {:.6f} s Average Runtime: {:.6f} for {} images.'
-                    .format(sum(total_time), sum(total_time)/171, 171))
+        # logger.info('Total Runtime: {:.6f} s Average Runtime: {:.6f} for {} images.'
+                    # .format(sum(total_time), sum(total_time)/171, 171))
 
 if __name__ == '__main__':
     main()
-    # print(test_index_generation(False, 5, 161))
+    # print(test_index_generation(False, 7, 7))
