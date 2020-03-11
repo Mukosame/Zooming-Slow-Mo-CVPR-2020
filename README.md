@@ -13,13 +13,13 @@ This is the official Pytorch implementation of *Zooming Slow-Mo: Fast and Accura
 - 2020.3.10: Upload the complete code and pretrained models
 
 ## Introduction
-The repository contains the entire project (including all the preprocessings) for one-stage space-time video super-resolution with Zooming Slow-Mo. 
+The repository contains the entire project (including all the preprocessing) for one-stage space-time video super-resolution with Zooming Slow-Mo. 
 
 Zooming Slow-Mo is a recently proposed joint video frame interpolation (VFI) and video super-resolution (VSR) method, which directly synthesizes an HR slow-motion video from an LFR, LR video. It is going to be published in [CVPR 2020](http://cvpr2020.thecvf.com/). The most up-to-date paper with supplementary materials can be found at [arXiv](https://arxiv.org/abs/2002.11616). 
 
-In Zooming Slow-Mo, we firstly temporally interpolate features of the missing LR frame by the proposed feature temporal interpolation network. Then, we propose a deformable ConvLSTM to align and aggregate temporal information simultaneously. Finally, a deep reconstruction network is adopted to predict HR slow-motion video frames. If our proposed architectures also help your research, please consider to cite our paper.
+In Zooming Slow-Mo, we firstly temporally interpolate features of the missing LR frame by the proposed feature temporal interpolation network. Then, we propose a deformable ConvLSTM to align and aggregate temporal information simultaneously. Finally, a deep reconstruction network is adopted to predict HR slow-motion video frames. If our proposed architectures also help your research, please consider citing our paper.
 
-Zooming Slow-Mo achieves the state-of-the-art performance by PSNR and SSIM in Vid4, Vimeo test sets.
+Zooming Slow-Mo achieves state-of-the-art performance by PSNR and SSIM in Vid4, Vimeo test sets.
 
 ![framework](./dump/framework.png)
 
@@ -43,7 +43,7 @@ First, make sure your machine has a GPU, which is required for the DCNv2 module.
 ```Shell
 git clone --recursive https://github.com/Mukosame/Zooming-Slow-Mo-CVPR-2020.git
 ```
-2. Complie the DCNv2:
+2. Compile the DCNv2:
 ```Shell
 cd $ZOOMING_ROOT/codes/models/modules/DCNv2
 bash make.sh         # build
@@ -57,12 +57,12 @@ Please make sure the test script finishes successfully without any errors before
 1. Download the original training + test set of `Vimeo-septuplet` (82 GB).
 
 ```Shell
-wget http://data.csail.mit.edu/tofu/dataset/vimeo_septuplet.zip	
+wget http://data.csail.mit.edu/tofu/dataset/vimeo_septuplet.zip    
 apt-get install unzip
 unzip vimeo_septuplet.zip
 ```
     
-2. Split the `Vimeo-septuplet` into training set and test set, make sure you change the dataset's path to your download path in script, also you need to run for training set and test set separately:
+2. Split the `Vimeo-septuplet` into a training set and a test set, make sure you change the dataset's path to your download path in script, also you need to run for the training set and test set separately:
 
 ```Shell
 cd $ZOOMING_ROOT/codes/data_scripts/sep_vimeo_list.py
@@ -77,7 +77,7 @@ run $ZOOMING_ROOT/codes/data_scripts/generate_LR_Vimeo90K.m
 ```
 
 ```Shell
-python $ZOOMING_ROOT/codes/data_scripts/generate_mod_LR_bic.py	
+python $ZOOMING_ROOT/codes/data_scripts/generate_mod_LR_bic.py    
 ```
 
 4. Create the LMDB files for faster I/O speed. Note that you need to configure your input and output path in the following script:
@@ -97,7 +97,6 @@ python train.py -opt options/train/train_zsm.yml
 ```
 After training, your model `xxxx_G.pth` and its training states, and a corresponding log file `train_LunaTokis_scratch_b16p32f5b40n7l1_600k_Vimeo_xxxx.log` are placed in the directory of `$ZOOMING_ROOT/experiments/LunaTokis_scratch_b16p32f5b40n7l1_600k_Vimeo/`.
 
-
 ### Testing
 We provide the test code for both standard test sets (Vid4, SPMC, etc.) and custom images. As a quick start, we also provide some example images in the [test_example](./test_example) folder. You can test the model with the following commands:
 
@@ -106,14 +105,9 @@ cd $ZOOMING_ROOT/codes
 python test.py
 ```
 
-- You can put your own test folders in the [test_example](./test_example) too, or just change the input path, number of frames, etc. in [test.py](codes/test.py).
+- You can put your own test folders in the [test_example](./test_example) too, or just change the input path, the number of frames, etc. in [test.py](codes/test.py).
 
 - Your custom test results will be saved to a folder here: `$ZOOMING_ROOT/results/your_data_name/`.
-
-## Contact
-[Xiaoyu Xiang](https://engineering.purdue.edu/people/xiaoyu.xiang.1) and [Yapeng Tian](http://yapengtian.org/). 
-
-You can also leave your questions as issues in the repository. We will be glad to answer them.
 
 ## Citations
 If you find the code helpful in your resarch or work, please cite the following papers.
@@ -142,6 +136,11 @@ If you find the code helpful in your resarch or work, please cite the following 
   year      = {2019},
 }
 ```
+
+## Contact
+[Xiaoyu Xiang](https://engineering.purdue.edu/people/xiaoyu.xiang.1) and [Yapeng Tian](http://yapengtian.org/). 
+
+You can also leave your questions as issues in the repository. We will be glad to answer them.
 
 ## License
 This project is released under the [GNU General Public License v3.0](https://github.com/Mukosame/Zooming-Slow-Mo-CVPR-2020/blob/master/LICENSE).
