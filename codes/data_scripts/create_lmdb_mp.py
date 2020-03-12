@@ -1,6 +1,6 @@
 '''create lmdb files for Vimeo90K-7 frames training dataset (multiprocessing)
 Will read all the images to the memory
-TODO: change it to adpat more memory limits'''
+'''
 
 import os,sys
 import os.path as osp

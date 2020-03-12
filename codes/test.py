@@ -11,45 +11,56 @@ import numpy as np
 import cv2
 import torch
 
-import utils.util as util
-import data.util as data_util
-import models.modules.Sakuya_arch as Sakuya_arch
+# import utils.util as util
+# import data.util as data_util
+# import models.modules.Sakuya_arch as Sakuya_arch
 
-def test_index_generation(skip, N_out, length_ori):
+def test_index_generation(skip, N_out, len_in):
     '''
-    N_ot | length | times | (no skip)                  |   (skip)
-    3    |   5    |  4/2  | [0,1], [1,2], [2,3], [3,4] | [0,2],[2,4]
-    3    |   7    |  5/3  | [0,1],[1,2][2,3]...[5,6]   | [0,2],[2,4],[4,6] 
+    params: 
+    skip: if skip even number; 
+    N_out: number of frames of the network; 
+    len_in: length of input frames
+
+    example:
+  len_in | N_out  | times | (no skip)                  |   (skip)
+    5    |   3    |  4/2  | [0,1], [1,2], [2,3], [3,4] | [0,2],[2,4]
+    7    |   3    |  5/3  | [0,1],[1,2][2,3]...[5,6]   | [0,2],[2,4],[4,6] 
     5    |   5    |  2/1  | [0,1,2] [2,3,4]            | [0,2,4]
     '''
-    if length_ori%2 == 0: # if input is even, discard the last frame
-        length = length_ori-1
-    else:
-        length = length_ori
+    print(skip, N_out, len_in)
+    # number of input frames for the network
     N_in = 1 + N_out // 2
-    if skip:
-        times = int(np.ceil((length-1) / (N_out-1)))
-        # print(length, N_out)
-    else:
-        times = int(np.ceil((length-1) / (N_in-1)))
-    n_elements = N_in
+    # input length should be enough to generate the output frames
+    assert N_in <= len_in
+
     sele_list = []
-    for i in range(times-1):
-        if skip:
-            l_list = [2*(i*(n_elements-1)+x) for x in range(n_elements)]                
-        else:
-            l_list = [i*(n_elements-1)+x for x in range(n_elements)]
-        h_list = [(N_out-1)*i+x for x in range(N_out)]
-        sele_list.append([l_list,h_list])
-    if skip:
-        l_list =  [length-1-2*x for x in range(n_elements)]    
-        h_list = [length-x-1 for x in range(N_out)]            
+    if skip: 
+        right = N_out # init
+        while (right <= len_in):
+            h_list = [right-N_out+x for x in range(N_out)]
+            l_list = h_list[::2]
+            right += (N_out - 1)
+            sele_list.append([l_list,h_list])
     else:
-        l_list  = [length-1-x for x in range(n_elements)]
-        h_list = [2*(length-1)-x for x in range(N_out)]
-    l_list.reverse()
-    h_list.reverse()
-    sele_list.append([l_list,h_list])
+        right = N_out # init
+        right_in = N_in
+        while (right_in <= len_in):
+            h_list = [right-N_out+x for x in range(N_out)]
+            l_list = [right_in-N_in+x for x in range(N_in)]
+            right += (N_out - 1)
+            right_in += (N_in - 1)
+            sele_list.append([l_list,h_list])
+    # check if it covers the last image, if not, we should cover it 
+    if (skip) and (right != len_in - 1):
+        h_list = [len_in - N_out + x for x in range(N_out)]
+        l_list = h_list[::2]
+        sele_list.append([l_list,h_list])
+    if (not skip) and (right_in != len_in - 1):
+        right = len_in * 2 - 1;
+        h_list = [right-N_out+x for x in range(N_out)]
+        l_list = [len_in - N_in + x for x in range(N_in)]
+        sele_list.append([l_list,h_list])        
     return sele_list
 
 def main():
@@ -277,5 +288,5 @@ def main():
                     # .format(sum(total_time), sum(total_time)/171, 171))
 
 if __name__ == '__main__':
-    main()
-    # print(test_index_generation(False, 7, 7))
+    # main()
+    print(test_index_generation(False, 7, 20))

@@ -1,5 +1,3 @@
-#TODO: update to the newest version
-
 import os
 import sys
 import cv2
@@ -12,15 +10,9 @@ except ImportError:
     pass
 
 
-def generate_mod_LR_bic():
-    # set parameters
-    up_scale = 4
-    mod_scale = 4
-    # TODO: set data dir
-    sourcedir = '/data/xiang/SR/Vid4/HR/calendar/'
-    savedir = '/data/xiang/SR/Vid4/LR/calendar/'
-
-    saveHRpath = os.path.join(savedir, 'HR', 'x' + str(mod_scale))
+def generate_mod_LR_bic(up_scale, sourcedir, savedir):
+    # params: upscale factor, input directory, output directory
+    saveHRpath = os.path.join(savedir, 'HR', 'x' + str(up_scale))
     saveLRpath = os.path.join(savedir, 'LR', 'x' + str(up_scale))
     saveBicpath = os.path.join(savedir, 'Bic', 'x' + str(up_scale))
 
@@ -62,13 +54,13 @@ def generate_mod_LR_bic():
         # read image
         image = cv2.imread(os.path.join(sourcedir, filename))
 
-        width = int(np.floor(image.shape[1] / mod_scale))
-        height = int(np.floor(image.shape[0] / mod_scale))
+        width = int(np.floor(image.shape[1] / up_scale))
+        height = int(np.floor(image.shape[0] / up_scale))
         # modcrop
         if len(image.shape) == 3:
-            image_HR = image[0:mod_scale * height, 0:mod_scale * width, :]
+            image_HR = image[0:up_scale * height, 0:up_scale * width, :]
         else:
-            image_HR = image[0:mod_scale * height, 0:mod_scale * width]
+            image_HR = image[0:up_scale * height, 0:up_scale * width]
         # LR
         image_LR = imresize_np(image_HR, 1 / up_scale, True)
         # bic
@@ -80,4 +72,4 @@ def generate_mod_LR_bic():
 
 
 if __name__ == "__main__":
-    generate_mod_LR_bic()
+    generate_mod_LR_bic(4, 'inPath', 'outPath')
