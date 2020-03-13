@@ -1,6 +1,7 @@
 '''
 test Zooming Slow-Mo models on arbitrary datasets
 write to txt log file
+[kosame] TODO: update the test script to the newest version
 '''
 
 import os
@@ -11,57 +12,9 @@ import numpy as np
 import cv2
 import torch
 
-# import utils.util as util
-# import data.util as data_util
-# import models.modules.Sakuya_arch as Sakuya_arch
-
-def test_index_generation(skip, N_out, len_in):
-    '''
-    params: 
-    skip: if skip even number; 
-    N_out: number of frames of the network; 
-    len_in: length of input frames
-
-    example:
-  len_in | N_out  | times | (no skip)                  |   (skip)
-    5    |   3    |  4/2  | [0,1], [1,2], [2,3], [3,4] | [0,2],[2,4]
-    7    |   3    |  5/3  | [0,1],[1,2][2,3]...[5,6]   | [0,2],[2,4],[4,6] 
-    5    |   5    |  2/1  | [0,1,2] [2,3,4]            | [0,2,4]
-    '''
-    print(skip, N_out, len_in)
-    # number of input frames for the network
-    N_in = 1 + N_out // 2
-    # input length should be enough to generate the output frames
-    assert N_in <= len_in
-
-    sele_list = []
-    if skip: 
-        right = N_out # init
-        while (right <= len_in):
-            h_list = [right-N_out+x for x in range(N_out)]
-            l_list = h_list[::2]
-            right += (N_out - 1)
-            sele_list.append([l_list,h_list])
-    else:
-        right = N_out # init
-        right_in = N_in
-        while (right_in <= len_in):
-            h_list = [right-N_out+x for x in range(N_out)]
-            l_list = [right_in-N_in+x for x in range(N_in)]
-            right += (N_out - 1)
-            right_in += (N_in - 1)
-            sele_list.append([l_list,h_list])
-    # check if it covers the last image, if not, we should cover it 
-    if (skip) and (right != len_in - 1):
-        h_list = [len_in - N_out + x for x in range(N_out)]
-        l_list = h_list[::2]
-        sele_list.append([l_list,h_list])
-    if (not skip) and (right_in != len_in - 1):
-        right = len_in * 2 - 1;
-        h_list = [right-N_out+x for x in range(N_out)]
-        l_list = [len_in - N_in + x for x in range(N_in)]
-        sele_list.append([l_list,h_list])        
-    return sele_list
+import utils.util as util
+import data.util as data_util
+import models.modules.Sakuya_arch as Sakuya_arch
 
 def main():
     scale = 4
@@ -110,26 +63,7 @@ def main():
     logger.info('Model parameters: {} M'.format(model_params))
     logger.info('Save images: {}'.format(save_imgs))
     logger.info('Flip Test: {}'.format(flip_test))
-
-    def read_image(img_path):
-        '''read one image from img_path
-        Return img: HWC, BGR, [0,1], numpy
-        '''
-        img_GT = cv2.imread(img_path)
-        img = img_GT.astype(np.float32) / 255.
-        return img
-
-    def read_seq_imgs(img_seq_path):
-        '''read a sequence of images'''
-        img_path_l = sorted(glob.glob(img_seq_path + '/*'))
-        # img_path_l.sort(key = lambda x: int(x.split('/')[-1][5:-4]))
-        img_l = [read_image(v) for v in img_path_l]
-        # stack to TCHW, RGB, [0,1], torch
-        imgs = np.stack(img_l, axis=0)
-        imgs = imgs[:, :, :, [2, 1, 0]]
-        imgs = torch.from_numpy(np.ascontiguousarray(np.transpose(imgs, (0, 3, 1, 2)))).float()
-        return imgs
-    
+   
 
     def single_forward(model, imgs_in):
         with torch.no_grad():
@@ -175,7 +109,7 @@ def main():
             util.mkdirs(save_sub_folder)
 
         #### read LR images
-        imgs = read_seq_imgs(sub_folder)
+        imgs = util.read_seq_imgs(sub_folder)
         #### read GT images
         img_GT_l = []
         if data_mode == 'SPMC':
@@ -185,7 +119,7 @@ def main():
 
         if 'Custom' not in data_mode:
             for img_GT_path in sorted(glob.glob(osp.join(sub_folder_GT,'*'))):
-                img_GT_l.append(read_image(img_GT_path))
+                img_GT_l.append(util.read_image(img_GT_path))
 
         avg_psnr, avg_psnr_sum, cal_n = 0,0,0
         avg_psnr_y, avg_psnr_sum_y = 0,0
@@ -196,9 +130,9 @@ def main():
             skip = False
         
         if 'Custom' in data_mode:
-            select_idx_list = test_index_generation(False, N_ot, len(img_LR_l))
+            select_idx_list = util.test_index_generation(False, N_ot, len(img_LR_l))
         else:
-            select_idx_list = test_index_generation(skip, N_ot, len(img_LR_l))
+            select_idx_list = util.test_index_generation(skip, N_ot, len(img_LR_l))
         # process each image
         for select_idxs in select_idx_list:
             # get input images
@@ -288,5 +222,4 @@ def main():
                     # .format(sum(total_time), sum(total_time)/171, 171))
 
 if __name__ == '__main__':
-    # main()
-    print(test_index_generation(False, 7, 20))
+    main()

@@ -98,7 +98,23 @@ python train.py -opt options/train/train_zsm.yml
 After training, your model `xxxx_G.pth` and its training states, and a corresponding log file `train_LunaTokis_scratch_b16p32f5b40n7l1_600k_Vimeo_xxxx.log` are placed in the directory of `$ZOOMING_ROOT/experiments/LunaTokis_scratch_b16p32f5b40n7l1_600k_Vimeo/`.
 
 ### Testing
-We provide the test code for both standard test sets (Vid4, SPMC, etc.) and custom images. As a quick start, we also provide some example images in the [test_example](./test_example) folder. You can test the model with the following commands:
+We provide the test code for both standard test sets (Vid4, SPMC, etc.) and custom video frames. 
+
+#### From Video
+
+If you have installed ffmpeg, you can convert any video to a high-resolution and high frame-rate video using [video_to_zsm.py](./video_to_zsm.py). The corresponding commands are:
+```Shell
+cd $ZOOMING_ROOT/codes
+python video_to_zsm.py --video PATH/TO/VIDEO.mp4 --model PATH/TO/PRETRAINED/MODEL.pth --output PATH/TO/OUTPUT.mp4
+```
+
+We also write the above commands to a Shell script, so you can directly run:
+```Shell
+bash zsm_my_video.sh
+```
+
+#### From Extracted Frames
+As a quick start, we also provide some example images in the [test_example](./test_example) folder. You can test the model with the following commands:
 
 ```Shell
 cd $ZOOMING_ROOT/codes
@@ -108,6 +124,9 @@ python test.py
 - You can put your own test folders in the [test_example](./test_example) too, or just change the input path, the number of frames, etc. in [test.py](codes/test.py).
 
 - Your custom test results will be saved to a folder here: `$ZOOMING_ROOT/results/your_data_name/`.
+
+#### Evaluate on Standard Test Sets
+The [test.py](codes/test.py) script also provides modes for evaluation on the following test sets: `Vid4`, `SPMC`, etc. We evaluate PSNR and SSIM on the Y-channels in YCrCb color space. The commands are the same with the ones above. All you need to do is the change the data_mode and corresponding path of the standard test set.
 
 ## Citations
 If you find the code helpful in your resarch or work, please cite the following papers.

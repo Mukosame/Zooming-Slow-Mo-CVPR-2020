@@ -16,10 +16,8 @@ def convert_frames_to_video(pathIn,pathOut,fps):
         filename=pathIn + files[i]
         #reading each file
         img = cv2.imread(filename)
-        print(filename)
         height, width, layers = img.shape
         size = (width,height)
-        print(filename)
         #inserting the frames into an image array
         frame_array.append(img)
 
