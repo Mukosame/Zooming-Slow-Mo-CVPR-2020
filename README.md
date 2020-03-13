@@ -2,7 +2,7 @@
 
 By [Xiaoyu Xiang<sup>*</sup>](https://engineering.purdue.edu/people/xiaoyu.xiang.1), [Yapeng Tian<sup>*</sup>](http://yapengtian.org/), [Yulun Zhang](http://yulunzhang.com/), [Yun Fu](http://www1.ece.neu.edu/~yunfu/), [Jan P. Allebach<sup>+</sup>](https://engineering.purdue.edu/~allebach/), [Chenliang Xu<sup>+</sup>](https://www.cs.rochester.edu/~cxu22/) (<sup>*</sup> equal contributions, <sup>+</sup> equal advising)
 
-This is the official Pytorch implementation of *Zooming Slow-Mo: Fast and Accurate One-Stage Space-Time Video Super-Resolution*. (under construction)
+This is the official Pytorch implementation of *Zooming Slow-Mo: Fast and Accurate One-Stage Space-Time Video Super-Resolution*. 
 
 
 #### [Paper](https://arxiv.org/abs/2002.11616) | [Project Page] | [Demo Video](https://youtu.be/8mgD8JxBOus) 
@@ -10,8 +10,21 @@ This is the official Pytorch implementation of *Zooming Slow-Mo: Fast and Accura
 [![Watch the video](dump/demo_thumbnail.PNG)](https://youtu.be/8mgD8JxBOus)
 
 ## Updates
+- 2020.3.13 Add meta-info of datasets used in this paper
 - 2020.3.11 Add new function: video converter
 - 2020.3.10: Upload the complete code and pretrained models
+
+## Contents
+0. [Introduction](#introduction)
+0. [Prerequisites](#Prerequisites)
+0. [Get Started](#Get-Started)
+   * [Installation](#Installation)
+   * [Training](#Training)
+   * [Testing](#Testing)
+0. [Citations](#citations)
+0. [Contact](#Contact)
+0. [License](#License)
+0. [Acknowledgments](#Acknowledgments)
 
 ## Introduction
 The repository contains the entire project (including all the preprocessing) for one-stage space-time video super-resolution with Zooming Slow-Mo. 
@@ -31,10 +44,6 @@ Zooming Slow-Mo achieves state-of-the-art performance by PSNR and SSIM in Vid4, 
 - NVIDIA GPU + [CUDA](https://developer.nvidia.com/cuda-downloads)
 - [Deformable Convolution v2](https://arxiv.org/abs/1811.11168), we adopt [CharlesShang's implementation](https://github.com/CharlesShang/DCNv2) in the submodule.
 - Python packages: `pip install numpy opencv-python lmdb pyyaml pickle matplotlib seaborn`
-
-## Pretrained Models
-
-Our pretrained model can be downloaded via [GitHub](https://github.com/Mukosame/Zooming-Slow-Mo-CVPR-2020/blob/master/experiments/pretrained_models/xiang2020zooming.pth) or [Google Drive](https://drive.google.com/open?id=1xeOoZclGeSI1urY6mVCcApfCqOPgxMBK).
 
 ## Get Started
 ### Installation 
@@ -101,6 +110,10 @@ After training, your model `xxxx_G.pth` and its training states, and a correspon
 ### Testing
 We provide the test code for both standard test sets (Vid4, SPMC, etc.) and custom video frames. 
 
+#### Pretrained Models
+
+Our pretrained model can be downloaded via [GitHub](https://github.com/Mukosame/Zooming-Slow-Mo-CVPR-2020/blob/master/experiments/pretrained_models/xiang2020zooming.pth) or [Google Drive](https://drive.google.com/open?id=1xeOoZclGeSI1urY6mVCcApfCqOPgxMBK).
+
 #### From Video
 
 If you have installed ffmpeg, you can convert any video to a high-resolution and high frame-rate video using [video_to_zsm.py](./video_to_zsm.py). The corresponding commands are:
@@ -131,7 +144,7 @@ The [test.py](codes/test.py) script also provides modes for evaluation on the fo
 
 ## Citations
 If you find the code helpful in your resarch or work, please cite the following papers.
-```
+```BibTex
 @InProceedings{xiang2020zooming,
   author = {Xiang, Xiaoyu and Tian, Yapeng and Zhang, Yulun and Fu, Yun and Jan, Allebach and Xu, Chenliang},
   title = {Zooming Slow-Mo: Fast and Accurate One-Stage Space-Time VideoSuper-Resolution},
