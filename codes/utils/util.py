@@ -305,11 +305,11 @@ def test_index_generation(skip, N_out, len_in):
             right_in += (N_in - 1)
             sele_list.append([l_list,h_list])
     # check if it covers the last image, if not, we should cover it 
-    if (skip) and (right != len_in - 1):
+    if (skip) and (right < len_in - 1):
         h_list = [len_in - N_out + x for x in range(N_out)]
         l_list = h_list[::2]
         sele_list.append([l_list,h_list])
-    if (not skip) and (right_in != len_in - 1):
+    if (not skip) and (right_in < len_in - 1):
         right = len_in * 2 - 1;
         h_list = [right-N_out+x for x in range(N_out)]
         l_list = [len_in - N_in + x for x in range(N_in)]
