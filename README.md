@@ -43,7 +43,7 @@ Zooming Slow-Mo achieves state-of-the-art performance by PSNR and SSIM in Vid4, 
 - [PyTorch >= 1.1](https://pytorch.org/)
 - NVIDIA GPU + [CUDA](https://developer.nvidia.com/cuda-downloads)
 - [Deformable Convolution v2](https://arxiv.org/abs/1811.11168), we adopt [CharlesShang's implementation](https://github.com/CharlesShang/DCNv2) in the submodule.
-- Python packages: `pip install numpy opencv-python lmdb pyyaml pickle matplotlib seaborn`
+- Python packages: `pip install numpy opencv-python lmdb pyyaml pickle5 matplotlib seaborn`
 
 ## Get Started
 ### Installation 
