@@ -146,9 +146,10 @@ The [test.py](codes/test.py) script also provides modes for evaluation on the fo
 If you find the code helpful in your resarch or work, please cite the following papers.
 ```BibTex
 @InProceedings{xiang2020zooming,
-  author = {Xiang, Xiaoyu and Tian, Yapeng and Zhang, Yulun and Fu, Yun and Jan, Allebach and Xu, Chenliang},
-  title = {Zooming Slow-Mo: Fast and Accurate One-Stage Space-Time VideoSuper-Resolution},
-  booktitle = {The IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  author = {Xiang, Xiaoyu and Tian, Yapeng and Zhang, Yulun and Fu, Yun and Allebach, Jan P. and Xu, Chenliang},
+  title = {Zooming Slow-Mo: Fast and Accurate One-Stage Space-Time Video Super-Resolution},
+  booktitle = {IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages={3370--3379},
   month = {June},
   year = {2020}
 }
@@ -156,7 +157,8 @@ If you find the code helpful in your resarch or work, please cite the following 
 @InProceedings{tian2018tdan,
   author={Yapeng Tian, Yulun Zhang, Yun Fu, and Chenliang Xu},
   title={TDAN: Temporally Deformable Alignment Network for Video Super-Resolution},
-  booktitle = {The IEEE Conference on Computer Vision and Pattern Recognition (CVPR)},
+  booktitle = {IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR)},
+  pages={3360--3369},
   month = {June},
   year = {2020}
 }
