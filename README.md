@@ -5,11 +5,12 @@ By [Xiaoyu Xiang<sup>*</sup>](https://engineering.purdue.edu/people/xiaoyu.xiang
 This is the official Pytorch implementation of *Zooming Slow-Mo: Fast and Accurate One-Stage Space-Time Video Super-Resolution*. 
 
 
-#### [Paper](https://arxiv.org/abs/2002.11616) | [Project Page] | [Demo Video](https://youtu.be/8mgD8JxBOus) 
+#### [Paper](https://arxiv.org/abs/2002.11616) | [Demo (YouTube)](https://youtu.be/8mgD8JxBOus) | [1-min teaser (YouTube)](https://www.youtube.com/watch?v=C1o85AXUNl8) | [1-min teaser (Bilibili)](https://www.bilibili.com/video/BV1GK4y1t7nb/)
 
-[![Watch the video](dump/demo_thumbnail.PNG)](https://youtu.be/8mgD8JxBOus)
+Input-> [![GIF demo](dump/demo720.gif)](https://youtu.be/8mgD8JxBOus) <- Output
 
 ## Updates
+- **Our paper will have Q&A session on June 16, 2-4 am/pm PDT. Welcome to come and ask questions!**
 - 2020.3.13 Add meta-info of datasets used in this paper
 - 2020.3.11 Add new function: video converter
 - 2020.3.10: Upload the complete code and pretrained models
