@@ -10,7 +10,6 @@ This is the official Pytorch implementation of *Zooming Slow-Mo: Fast and Accura
 Input-> [![GIF demo](dump/demo720.gif)](https://youtu.be/8mgD8JxBOus) <- Output
 
 ## Updates
-- **Our paper will have Q&A session on June 16, 2-4 am/pm PDT. Welcome to come and ask questions!**
 - 2020.3.13 Add meta-info of datasets used in this paper
 - 2020.3.11 Add new function: video converter
 - 2020.3.10: Upload the complete code and pretrained models
