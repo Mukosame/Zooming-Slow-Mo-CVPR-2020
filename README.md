@@ -47,6 +47,8 @@ Zooming Slow-Mo achieves state-of-the-art performance by PSNR and SSIM in Vid4, 
 
 ## Get Started
 ### Installation 
+Install the required packages: ```pip install -r requirements.txt```
+
 First, make sure your machine has a GPU, which is required for the DCNv2 module.
 
 1. Clone the Zooming Slow-Mo repository. We'll call the directory that you cloned Zooming Slow-Mo as ZOOMING_ROOT.
@@ -77,7 +79,22 @@ unzip vimeo_septuplet.zip
 ```Shell
 cd $ZOOMING_ROOT/codes/data_scripts/sep_vimeo_list.py
 ```
-This will create `train` and `test` folders in the directory of **`vimeo_septuplet/sequences`**.
+This will create `train` and `test` folders in the directory of **`vimeo_septuplet/sequences`**. The folder structure is as follows:
+
+```
+vimeo_septuplet
+├── sequences
+    ├── 00001
+        ├── 0266
+            ├── im1.png
+            ├── ...
+            ├── im7.png
+        ├── 0268...
+    ├── 00002...
+├── readme.txt
+├──sep_trainlist.txt
+├── sep_testlist.txt
+```
 
 3. Generate low resolution (LR) images. You can either do this via MATLAB or Python (remember to configure the input and output path):
 
@@ -93,6 +110,13 @@ python $ZOOMING_ROOT/codes/data_scripts/generate_mod_LR_bic.py
 4. Create the LMDB files for faster I/O speed. Note that you need to configure your input and output path in the following script:
 ```Shell
 python $ZOOMING_ROOT/codes/data_scripts/create_lmdb_mp.py
+```
+The structure of generated lmdb folder is as follows:
+```
+Vimeo7_train.lmdb
+├── data.mdb
+├── lock.mdb
+├── meta_info.txt
 ```
 
 #### Part 2: Train
