@@ -21,6 +21,7 @@ Input-> [![GIF demo](dump/demo720.gif)](https://youtu.be/8mgD8JxBOus) <- Output
    * [Installation](#Installation)
    * [Training](#Training)
    * [Testing](#Testing)
+   * [Colab Notebook](#Colab-Notebook)
 0. [Citations](#citations)
 0. [Contact](#Contact)
 0. [License](#License)
@@ -166,6 +167,8 @@ python test.py
 #### Evaluate on Standard Test Sets
 The [test.py](codes/test.py) script also provides modes for evaluation on the following test sets: `Vid4`, `SPMC`, etc. We evaluate PSNR and SSIM on the Y-channels in YCrCb color space. The commands are the same with the ones above. All you need to do is the change the data_mode and corresponding path of the standard test set.
 
+### Colab Notebook
+PyTorch Colab notebook (provided by [@HanClinto](https://github.com/HanClinto)): [HighResSlowMo.ipynb](https://gist.github.com/HanClinto/49219942f76d5f20990b6d048dbacbaf)
 ## Citations
 If you find the code helpful in your resarch or work, please cite the following papers.
 ```BibTex
