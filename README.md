@@ -141,7 +141,7 @@ Our pretrained model can be downloaded via [GitHub](https://github.com/Mukosame/
 
 #### From Video
 
-If you have installed ffmpeg, you can convert any video to a high-resolution and high frame-rate video using [video_to_zsm.py](./video_to_zsm.py). The corresponding commands are:
+If you have installed ffmpeg, you can convert any video to a high-resolution and high frame-rate video using [video_to_zsm.py](./codes/video_to_zsm.py). The corresponding commands are:
 ```Shell
 cd $ZOOMING_ROOT/codes
 python video_to_zsm.py --video PATH/TO/VIDEO.mp4 --model PATH/TO/PRETRAINED/MODEL.pth --output PATH/TO/OUTPUT.mp4
