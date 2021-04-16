@@ -5,7 +5,7 @@ By [Xiaoyu Xiang<sup>*</sup>](https://engineering.purdue.edu/people/xiaoyu.xiang
 This is the official Pytorch implementation of *Zooming Slow-Mo: Fast and Accurate One-Stage Space-Time Video Super-Resolution*. 
 
 
-#### [Paper](https://arxiv.org/abs/2002.11616) | [Demo (YouTube)](https://youtu.be/8mgD8JxBOus) | [1-min teaser (YouTube)](https://www.youtube.com/watch?v=C1o85AXUNl8) | [1-min teaser (Bilibili)](https://www.bilibili.com/video/BV1GK4y1t7nb/)
+#### [Paper](https://arxiv.org/abs/2002.11616) | [Journal Version](https://arxiv.org/abs/2104.07473) | [Demo (YouTube)](https://youtu.be/8mgD8JxBOus) | [1-min teaser (YouTube)](https://www.youtube.com/watch?v=C1o85AXUNl8) | [1-min teaser (Bilibili)](https://www.bilibili.com/video/BV1GK4y1t7nb/)
 
 Input-> [![GIF demo](dump/demo720.gif)](https://youtu.be/8mgD8JxBOus) <- Output
 
@@ -172,6 +172,15 @@ PyTorch Colab notebook (provided by [@HanClinto](https://github.com/HanClinto)):
 ## Citations
 If you find the code helpful in your resarch or work, please cite the following papers.
 ```BibTex
+@misc{xiang2021zooming,
+  title={Zooming SlowMo: An Efficient One-Stage Framework for Space-Time Video Super-Resolution}, 
+  author={Xiang, Xiaoyu and Tian, Yapeng and Zhang, Yulun and Fu, Yun and Allebach, Jan P and Xu, Chenliang},
+  archivePrefix={arXiv},
+  eprint={2104.07473},
+  year={2021},
+  primaryClass={cs.CV}
+}
+
 @InProceedings{xiang2020zooming,
   author = {Xiang, Xiaoyu and Tian, Yapeng and Zhang, Yulun and Fu, Yun and Allebach, Jan P. and Xu, Chenliang},
   title = {Zooming Slow-Mo: Fast and Accurate One-Stage Space-Time Video Super-Resolution},
