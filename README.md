@@ -7,7 +7,24 @@ This is the official Pytorch implementation of *Zooming Slow-Mo: Fast and Accura
 
 #### [Paper](https://arxiv.org/abs/2002.11616) | [Journal Version](https://arxiv.org/abs/2104.07473) | [Demo (YouTube)](https://youtu.be/8mgD8JxBOus) | [1-min teaser (YouTube)](https://www.youtube.com/watch?v=C1o85AXUNl8) | [1-min teaser (Bilibili)](https://www.bilibili.com/video/BV1GK4y1t7nb/)
 
-Input-> [![GIF demo](dump/demo720.gif)](https://youtu.be/8mgD8JxBOus) <- Output
+<table>
+  <thead>
+    <tr>
+      <td>Input&nbsp;&nbsp;&nbsp;&nbsp;</td>
+      <td>Output</td>
+    </tr>
+  </thead>
+  <tr>
+    <td colspan="2">
+      <a href="https://youtu.be/8mgD8JxBOus">
+        <img src="dump/demo720.gif" alt="Demo GIF">
+        </img>
+      </a>
+    </td>
+  </tr>
+</table>
+
+
 
 ## Updates
 - 2020.3.13 Add meta-info of datasets used in this paper
