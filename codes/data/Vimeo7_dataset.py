@@ -118,7 +118,7 @@ class Vimeo7Dataset(data.Dataset):
         # print(scale)
         N_frames = self.opt['N_frames']
         GT_size = self.opt['GT_size']
-        key = self.paths_GT[index]
+        key = self.paths_GT['keys'][index]
         name_a, name_b = key.split('_')
 
         center_frame_idx = random.randint(2,6) # 2<= index <=6
@@ -221,4 +221,4 @@ class Vimeo7Dataset(data.Dataset):
         return {'LQs': img_LQs, 'GT': img_GTs, 'key': key}
 
     def __len__(self):
-        return len(self.paths_GT)
+        return len(self.paths_GT['keys'])

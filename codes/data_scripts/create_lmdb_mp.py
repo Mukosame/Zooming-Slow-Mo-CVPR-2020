@@ -112,7 +112,7 @@ def vimeo7():
     elif mode == 'LR':
         meta_info['name'] = 'Vimeo7_train_LR7'
     meta_info['resolution'] = '{}_{}_{}'.format(3, H_dst, W_dst)
-    key_set = set()
+    key_set = []
     for key in keys:
         a, b, _ = key.split('_')
         key_set.add('{}_{}'.format(a, b))
