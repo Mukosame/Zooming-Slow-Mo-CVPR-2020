@@ -2,7 +2,8 @@
 Will read all the images to the memory
 '''
 
-import os,sys
+import os
+import sys
 import os.path as osp
 import glob
 import pickle
@@ -23,6 +24,7 @@ def reading_image_worker(path, key):
     img = cv2.imread(path, cv2.IMREAD_UNCHANGED)
     return (key, img)
 
+
 def vimeo7():
     '''create lmdb for the Vimeo90K-7 frames dataset, each image with fixed size
     GT: [3, 256, 448]
@@ -32,9 +34,9 @@ def vimeo7():
     key:
         Use the folder and subfolder names, w/o the frame index, e.g., 00001_0001
     '''
-    #### configurations
+    # configurations
     mode = 'GT'  # GT | LR
-    batch = 3000 # TODO: depending on your mem size
+    batch = 3000  # TODO: depending on your mem size
     if mode == 'GT':
         img_folder = '/data/datasets/SR/vimeo_septuplet/sequences/train'
         lmdb_save_path = '/data/datasets/SR/vimeo_septuplet/vimeo7_train_GT.lmdb'
@@ -49,12 +51,12 @@ def vimeo7():
     ########################################################
     if not lmdb_save_path.endswith('.lmdb'):
         raise ValueError("lmdb_save_path must end with \'lmdb\'.")
-    #### whether the lmdb file exist
+    # whether the lmdb file exist
     if osp.exists(lmdb_save_path):
         print('Folder [{:s}] already exists. Exit...'.format(lmdb_save_path))
         sys.exit(1)
 
-    #### read all the image paths to a list
+    # read all the image paths to a list
     print('Reading image path list ...')
     with open(txt_file) as f:
         train_l = f.readlines()
@@ -70,20 +72,20 @@ def vimeo7():
             keys.append('{}_{}_{}'.format(folder, sub_folder, j + 1))
     all_img_list = sorted(all_img_list)
     keys = sorted(keys)
-    if mode == 'GT': 
+    if mode == 'GT':
         all_img_list = [v for v in all_img_list if v.endswith('.png')]
         keys = [v for v in keys]
     print('Calculating the total size of images...')
     data_size = sum(os.stat(v).st_size for v in all_img_list)
 
-    #### read all images to memory (multiprocessing)
+    # read all images to memory (multiprocessing)
     print('Read images with multiprocessing, #thread: {} ...'.format(n_thread))
-    
-    #### create lmdb environment
+
+    # create lmdb environment
     env = lmdb.open(lmdb_save_path, map_size=data_size * 10)
     txn = env.begin(write=True)  # txn is a Transaction object
 
-    #### write data to lmdb
+    # write data to lmdb
     pbar = util.ProgressBar(len(all_img_list))
 
     i = 0
@@ -95,17 +97,17 @@ def vimeo7():
         assert H == H_dst and W == W_dst and C == 3, 'different shape.'
         txn.put(key_byte, img)
         i += 1
-        if  i % batch == 1:
+        if i % batch == 1:
             txn.commit()
             txn = env.begin(write=True)
 
     txn.commit()
     env.close()
     print('Finish reading and writing {} images.'.format(len(all_img_list)))
-            
+
     print('Finish writing lmdb.')
 
-    #### create meta information
+    # create meta information
     meta_info = {}
     if mode == 'GT':
         meta_info['name'] = 'Vimeo7_train_GT'
@@ -117,11 +119,14 @@ def vimeo7():
         a, b, _ = key.split('_')
         key_set.add('{}_{}'.format(a, b))
     meta_info['keys'] = key_set
-    pickle.dump(meta_info, open(osp.join(lmdb_save_path, 'Vimeo7_train_keys.pkl'), "wb"))
+    pickle.dump(meta_info, open(
+        osp.join(lmdb_save_path, 'Vimeo7_train_keys.pkl'), "wb"))
     print('Finish creating lmdb meta info.')
 
+
 def test_lmdb(dataroot, dataset='vimeo7'):
-    env = lmdb.open(dataroot, readonly=True, lock=False, readahead=False, meminit=False)
+    env = lmdb.open(dataroot, readonly=True, lock=False,
+                    readahead=False, meminit=False)
     meta_info = pickle.load(open(osp.join(dataroot, 'meta_info.pkl'), "rb"))
     print('Name: ', meta_info['name'])
     print('Resolution: ', meta_info['resolution'])

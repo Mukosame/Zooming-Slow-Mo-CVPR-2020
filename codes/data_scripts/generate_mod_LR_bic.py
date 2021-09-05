@@ -4,7 +4,8 @@ import cv2
 import numpy as np
 
 try:
-    sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+    sys.path.append(os.path.dirname(
+        os.path.dirname(os.path.abspath(__file__))))
     from data.util import imresize_np
 except ImportError:
     pass

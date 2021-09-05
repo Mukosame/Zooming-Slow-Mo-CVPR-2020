@@ -40,7 +40,7 @@ class Vimeo7Dataset(data.Dataset):
         self.half_N_frames = opt['N_frames'] // 2
         self.LR_N_frames = 1 + self.half_N_frames
         assert self.LR_N_frames > 1, 'Error: Not enough LR frames to interpolate'
-        #### determine the LQ frame list
+        # determine the LQ frame list
         '''
         N | frames
         1 | error
@@ -54,8 +54,9 @@ class Vimeo7Dataset(data.Dataset):
 
         self.GT_root, self.LQ_root = opt['dataroot_GT'], opt['dataroot_LQ']
         self.data_type = self.opt['data_type']
-        self.LR_input = False if opt['GT_size'] == opt['LQ_size'] else True  # low resolution inputs
-        #### directly load image keys
+        # low resolution inputs
+        self.LR_input = False if opt['GT_size'] == opt['LQ_size'] else True
+        # directly load image keys
         if opt['cache_keys']:
             logger.info('Using cache keys: {}'.format(opt['cache_keys']))
             cache_keys = opt['cache_keys']
@@ -63,7 +64,7 @@ class Vimeo7Dataset(data.Dataset):
             cache_keys = 'Vimeo7_train_keys.pkl'
         logger.info('Using cache keys - {}.'.format(cache_keys))
         self.paths_GT = pickle.load(open('./data/{}'.format(cache_keys), 'rb'))
-     
+
         assert self.paths_GT, 'Error: GT path is empty.'
 
         if self.data_type == 'lmdb':
@@ -101,9 +102,12 @@ class Vimeo7Dataset(data.Dataset):
 
     def _read_img_mc_BGR(self, path, name_a, name_b):
         ''' Read BGR channels separately and then combine for 1M limits in cluster'''
-        img_B = self._read_img_mc(osp.join(path + '_B', name_a, name_b + '.png'))
-        img_G = self._read_img_mc(osp.join(path + '_G', name_a, name_b + '.png'))
-        img_R = self._read_img_mc(osp.join(path + '_R', name_a, name_b + '.png'))
+        img_B = self._read_img_mc(
+            osp.join(path + '_B', name_a, name_b + '.png'))
+        img_G = self._read_img_mc(
+            osp.join(path + '_G', name_a, name_b + '.png'))
+        img_R = self._read_img_mc(
+            osp.join(path + '_R', name_a, name_b + '.png'))
         img = cv2.merge((img_B, img_G, img_R))
         return img
 
@@ -121,9 +125,9 @@ class Vimeo7Dataset(data.Dataset):
         key = self.paths_GT['keys'][index]
         name_a, name_b = key.split('_')
 
-        center_frame_idx = random.randint(2,6) # 2<= index <=6
+        center_frame_idx = random.randint(2, 6)  # 2<= index <=6
 
-        #### determine the neighbor frames
+        # determine the neighbor frames
         interval = random.choice(self.interval_list)
         if self.opt['border_mode']:
             direction = 1  # 1: forward; 0: backward
@@ -160,19 +164,22 @@ class Vimeo7Dataset(data.Dataset):
             neighbor_list) == self.opt['N_frames'], 'Wrong length of neighbor list: {}'.format(
                 len(neighbor_list))
 
-        #### get the GT image (as the center frame)
+        # get the GT image (as the center frame)
         img_GT_l = []
         for v in neighbor_list:
             if self.data_type == 'mc':
-                img_GT = self._read_img_mc_BGR(self.GT_root, name_a, name_b, '{}.png'.format(v))
+                img_GT = self._read_img_mc_BGR(
+                    self.GT_root, name_a, name_b, '{}.png'.format(v))
                 img_GT = img_GT.astype(np.float32) / 255.
             elif self.data_type == 'lmdb':
-                img_GT = util.read_img(self.GT_env, key + '_{}'.format(v), (3, 256, 448))
-            else:               
-                img_GT = util.read_img(None, osp.join(self.GT_root, name_a, name_b, 'im{}.png'.format(v)))
+                img_GT = util.read_img(
+                    self.GT_env, key + '_{}'.format(v), (3, 256, 448))
+            else:
+                img_GT = util.read_img(None, osp.join(
+                    self.GT_root, name_a, name_b, 'im{}.png'.format(v)))
             img_GT_l.append(img_GT)
-                
-       #### get LQ images
+
+       # get LQ images
         LQ_size_tuple = (3, 64, 112) if self.LR_input else (3, 256, 448)
         img_LQ_l = []
         for v in self.LQ_frames_list:
@@ -181,7 +188,8 @@ class Vimeo7Dataset(data.Dataset):
                     osp.join(self.LQ_root, name_a, name_b, '/{}.png'.format(v)))
                 img_LQ = img_LQ.astype(np.float32) / 255.
             elif self.data_type == 'lmdb':
-                img_LQ = util.read_img(self.LQ_env, key + '_{}'.format(v), LQ_size_tuple)
+                img_LQ = util.read_img(
+                    self.LQ_env, key + '_{}'.format(v), LQ_size_tuple)
             else:
                 img_LQ = util.read_img(None,
                                        osp.join(self.LQ_root, name_a, name_b, 'im{}.png'.format(v)))
@@ -194,18 +202,23 @@ class Vimeo7Dataset(data.Dataset):
                 LQ_size = GT_size // scale
                 rnd_h = random.randint(0, max(0, H - LQ_size))
                 rnd_w = random.randint(0, max(0, W - LQ_size))
-                img_LQ_l = [v[rnd_h:rnd_h + LQ_size, rnd_w:rnd_w + LQ_size, :] for v in img_LQ_l]
+                img_LQ_l = [v[rnd_h:rnd_h + LQ_size,
+                              rnd_w:rnd_w + LQ_size, :] for v in img_LQ_l]
                 rnd_h_HR, rnd_w_HR = int(rnd_h * scale), int(rnd_w * scale)
-                img_GT_l = [v[rnd_h_HR:rnd_h_HR + GT_size, rnd_w_HR:rnd_w_HR + GT_size, :] for v in img_GT_l]
+                img_GT_l = [v[rnd_h_HR:rnd_h_HR + GT_size,
+                              rnd_w_HR:rnd_w_HR + GT_size, :] for v in img_GT_l]
             else:
                 rnd_h = random.randint(0, max(0, H - GT_size))
                 rnd_w = random.randint(0, max(0, W - GT_size))
-                img_LQ_l = [v[rnd_h:rnd_h + GT_size, rnd_w:rnd_w + GT_size, :] for v in img_LQ_l]
-                img_GT_l = [v[rnd_h:rnd_h + GT_size, rnd_w:rnd_w + GT_size, :] for v in img_GT_l]
+                img_LQ_l = [v[rnd_h:rnd_h + GT_size,
+                              rnd_w:rnd_w + GT_size, :] for v in img_LQ_l]
+                img_GT_l = [v[rnd_h:rnd_h + GT_size,
+                              rnd_w:rnd_w + GT_size, :] for v in img_GT_l]
 
             # augmentation - flip, rotate
             img_LQ_l = img_LQ_l + img_GT_l
-            rlt = util.augment(img_LQ_l, self.opt['use_flip'], self.opt['use_rot'])
+            rlt = util.augment(
+                img_LQ_l, self.opt['use_flip'], self.opt['use_rot'])
             img_LQ_l = rlt[0:-N_frames]
             img_GT_l = rlt[-N_frames:]
 
@@ -215,7 +228,8 @@ class Vimeo7Dataset(data.Dataset):
         # BGR to RGB, HWC to CHW, numpy to tensor
         img_GTs = img_GTs[:, :, :, [2, 1, 0]]
         img_LQs = img_LQs[:, :, :, [2, 1, 0]]
-        img_GTs = torch.from_numpy(np.ascontiguousarray(np.transpose(img_GTs, (0, 3, 1, 2)))).float()
+        img_GTs = torch.from_numpy(np.ascontiguousarray(
+            np.transpose(img_GTs, (0, 3, 1, 2)))).float()
         img_LQs = torch.from_numpy(np.ascontiguousarray(np.transpose(img_LQs,
                                                                      (0, 3, 1, 2)))).float()
         return {'LQs': img_LQs, 'GT': img_GTs, 'key': key}

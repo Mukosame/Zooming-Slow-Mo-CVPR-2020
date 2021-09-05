@@ -26,7 +26,8 @@ class VideoSRBaseModel(BaseModel):
         self.netG = networks.define_G(opt).to(self.device)
 
         if opt['dist']:
-            self.netG = DistributedDataParallel(self.netG, device_ids=[torch.cuda.current_device()])
+            self.netG = DistributedDataParallel(
+                self.netG, device_ids=[torch.cuda.current_device()])
         else:
             self.netG = DataParallel(self.netG)
         # print network
@@ -36,7 +37,7 @@ class VideoSRBaseModel(BaseModel):
         if self.is_train:
             self.netG.train()
 
-            #### loss
+            # loss
             loss_type = train_opt['pixel_criterion']
             if loss_type == 'l1':
                 self.cri_pix = nn.L1Loss(reduction='sum').to(self.device)
@@ -47,10 +48,11 @@ class VideoSRBaseModel(BaseModel):
             elif loss_type == 'lp':
                 self.cri_pix = LapLoss(max_levels=5).to(self.device)
             else:
-                raise NotImplementedError('Loss type [{:s}] is not recognized.'.format(loss_type))
+                raise NotImplementedError(
+                    'Loss type [{:s}] is not recognized.'.format(loss_type))
             self.l_pix_w = train_opt['pixel_weight']
 
-            #### optimizers
+            # optimizers
             wd_G = train_opt['weight_decay_G'] if train_opt['weight_decay_G'] else 0
             optim_params = []
             for k, v in self.netG.named_parameters():
@@ -58,13 +60,14 @@ class VideoSRBaseModel(BaseModel):
                     optim_params.append(v)
                 else:
                     if self.rank <= 0:
-                        logger.warning('Params [{:s}] will not optimize.'.format(k))
+                        logger.warning(
+                            'Params [{:s}] will not optimize.'.format(k))
 
             self.optimizer_G = torch.optim.Adam(optim_params, lr=train_opt['lr_G'],
                                                 weight_decay=wd_G,
                                                 betas=(train_opt['beta1'], train_opt['beta2']))
             self.optimizers.append(self.optimizer_G)
-            #### schedulers
+            # schedulers
             if train_opt['lr_scheme'] == 'MultiStepLR':
                 for optimizer in self.optimizers:
                     self.schedulers.append(
@@ -128,14 +131,16 @@ class VideoSRBaseModel(BaseModel):
         else:
             net_struc_str = '{}'.format(self.netG.__class__.__name__)
         if self.rank <= 0:
-            logger.info('Network G structure: {}, with parameters: {:,d}'.format(net_struc_str, n))
+            logger.info(
+                'Network G structure: {}, with parameters: {:,d}'.format(net_struc_str, n))
             logger.info(s)
 
     def load(self):
         load_path_G = self.opt['path']['pretrain_model_G']
         if load_path_G is not None:
             logger.info('Loading model for G [{:s}] ...'.format(load_path_G))
-            self.load_network(load_path_G, self.netG, self.opt['path']['strict_load'])
+            self.load_network(load_path_G, self.netG,
+                              self.opt['path']['strict_load'])
 
     def save(self, iter_label):
         self.save_network(self.netG, 'G', iter_label)

@@ -46,6 +46,7 @@ def get_model_total_params(model):
     params = sum([np.prod(p.size()) for p in model_parameters])
     return (1.0*params/(1000*1000))
 
+
 def get_timestamp():
     return datetime.now().strftime('%y%m%d-%H%M%S')
 
@@ -68,7 +69,8 @@ def mkdir_and_rename(path):
         new_name = path + '_archived_' + get_timestamp()
         print('Path already exists. Rename it to [{:s}]'.format(new_name))
         logger = logging.getLogger('base')
-        logger.info('Path already exists. Rename it to [{:s}]'.format(new_name))
+        logger.info(
+            'Path already exists. Rename it to [{:s}]'.format(new_name))
         os.rename(path, new_name)
     os.makedirs(path)
 
@@ -87,7 +89,8 @@ def setup_logger(logger_name, root, phase, level=logging.INFO, screen=False, tof
                                   datefmt='%y-%m-%d %H:%M:%S')
     lg.setLevel(level)
     if tofile:
-        log_file = os.path.join(root, phase + '_{}.log'.format(get_timestamp()))
+        log_file = os.path.join(
+            root, phase + '_{}.log'.format(get_timestamp()))
         fh = logging.FileHandler(log_file, mode='w')
         fh.setFormatter(formatter)
         lg.addHandler(fh)
@@ -109,11 +112,13 @@ def tensor2img(tensor, out_type=np.uint8, min_max=(0, 1)):
     Output: 3D(H,W,C) or 2D(H,W), [0,255], np.uint8 (default)
     '''
     tensor = tensor.squeeze().float().cpu().clamp_(*min_max)  # clamp
-    tensor = (tensor - min_max[0]) / (min_max[1] - min_max[0])  # to range [0,1]
+    tensor = (tensor - min_max[0]) / \
+        (min_max[1] - min_max[0])  # to range [0,1]
     n_dim = tensor.dim()
     if n_dim == 4:
         n_img = len(tensor)
-        img_np = make_grid(tensor, nrow=int(math.sqrt(n_img)), normalize=False).numpy()
+        img_np = make_grid(tensor, nrow=int(
+            math.sqrt(n_img)), normalize=False).numpy()
         img_np = np.transpose(img_np[[2, 1, 0], :, :], (1, 2, 0))  # HWC, BGR
     elif n_dim == 3:
         img_np = tensor.numpy()
@@ -203,7 +208,8 @@ class ProgressBar(object):
     def __init__(self, task_num=0, bar_width=50, start=True):
         self.task_num = task_num
         max_bar_width = self._get_max_bar_width()
-        self.bar_width = (bar_width if bar_width <= max_bar_width else max_bar_width)
+        self.bar_width = (bar_width if bar_width <=
+                          max_bar_width else max_bar_width)
         self.completed = 0
         if start:
             self.start()
@@ -236,7 +242,8 @@ class ProgressBar(object):
             mark_width = int(self.bar_width * percentage)
             bar_chars = '>' * mark_width + '-' * (self.bar_width - mark_width)
             sys.stdout.write('\033[2F')  # cursor up 2 lines
-            sys.stdout.write('\033[J')  # clean the output (remove extra chars since last display)
+            # clean the output (remove extra chars since last display)
+            sys.stdout.write('\033[J')
             sys.stdout.write('[{}] {}/{}, {:.1f} task/s, elapsed: {}s, ETA: {:5}s\n{}\n'.format(
                 bar_chars, self.completed, self.task_num, fps, int(elapsed + 0.5), eta, msg))
         else:
@@ -248,6 +255,7 @@ class ProgressBar(object):
 # read image
 ####################
 
+
 def read_image(img_path):
     '''read one image from img_path
     Return img: HWC, BGR, [0,1], numpy
@@ -256,16 +264,23 @@ def read_image(img_path):
     img = img_GT.astype(np.float32) / 255.
     return img
 
+
 def read_seq_imgs(img_seq_path):
     '''read a sequence of images'''
     img_path_l = glob.glob(img_seq_path + '/*')
-    # img_path_l.sort(key=lambda x: int(os.path.basename(x)[:-4]))
-    img_path_l.sort(key=lambda x: int(re.search(r'\d+', os.path.basename(x)).group()))
+    img_path_l.sort(key=lambda x: int(
+        re.search(r'\d+', os.path.basename(x)).group()))
+    return read_seq_imgs_by_list(img_path_l)
+
+
+def read_seq_imgs_by_list(img_path_l):
+    '''read a sequence of images from the given list'''
     img_l = [read_image(v) for v in img_path_l]
     # stack to TCHW, RGB, [0,1], torch
     imgs = np.stack(img_l, axis=0)
     imgs = imgs[:, :, :, [2, 1, 0]]
-    imgs = torch.from_numpy(np.ascontiguousarray(np.transpose(imgs, (0, 3, 1, 2)))).float()
+    imgs = torch.from_numpy(np.ascontiguousarray(
+        np.transpose(imgs, (0, 3, 1, 2)))).float()
     return imgs
 
 
@@ -288,32 +303,32 @@ def test_index_generation(skip, N_out, len_in):
     assert N_in <= len_in
 
     sele_list = []
-    if skip: 
-        right = N_out # init
+    if skip:
+        right = N_out  # init
         while (right <= len_in):
             h_list = [right-N_out+x for x in range(N_out)]
             l_list = h_list[::2]
             right += (N_out - 1)
-            sele_list.append([l_list,h_list])
+            sele_list.append([l_list, h_list])
     else:
-        right = N_out # init
+        right = N_out  # init
         right_in = N_in
         while (right_in <= len_in):
             h_list = [right-N_out+x for x in range(N_out)]
             l_list = [right_in-N_in+x for x in range(N_in)]
             right += (N_out - 1)
             right_in += (N_in - 1)
-            sele_list.append([l_list,h_list])
-    # check if it covers the last image, if not, we should cover it 
+            sele_list.append([l_list, h_list])
+    # check if it covers the last image, if not, we should cover it
     if (skip) and (right < len_in - 1):
         h_list = [len_in - N_out + x for x in range(N_out)]
         l_list = h_list[::2]
-        sele_list.append([l_list,h_list])
+        sele_list.append([l_list, h_list])
     if (not skip) and (right_in < len_in - 1):
-        right = len_in * 2 - 1;
+        right = len_in * 2 - 1
         h_list = [right-N_out+x for x in range(N_out)]
         l_list = [len_in - N_in + x for x in range(N_in)]
-        sele_list.append([l_list,h_list])        
+        sele_list.append([l_list, h_list])
     return sele_list
 
 
@@ -337,20 +352,43 @@ def extract_frames(ffmpeg_dir, video, outDir):
     """
 
     error = ""
-    print('{} -i {} -vsync 0 {}/%06d.png'.format(os.path.join(ffmpeg_dir, "ffmpeg"), video, outDir))
-    retn = os.system('{} -i "{}" -vsync 0 {}/%06d.png'.format(os.path.join(ffmpeg_dir, "ffmpeg"), video, outDir))
+    print('{} -i {} -vsync 0 {}/%06d.png'.format(os.path.join(ffmpeg_dir,
+          "ffmpeg"), video, outDir))
+    retn = os.system('{} -i "{}" -vsync 0 {}/%06d.png'.format(
+        os.path.join(ffmpeg_dir, "ffmpeg"), video, outDir))
     if retn:
         error = "Error converting file:{}. Exiting.".format(video)
     return error
 
+
 def create_video(ffmpeg_dir, dir, output, fps):
     error = ""
-    # print('{} -r {} -i {}/%6d.png -vcodec ffvhuff {}'.format(os.path.join(ffmpeg_dir, "ffmpeg"), fps, dir, output))
-    # retn = os.system('{} -r {} -i {}/%6d.png -vcodec ffvhuff "{}"'.format(os.path.join(ffmpeg_dir, "ffmpeg"), fps, dir, output))
-    print('{} -r {} -f image2 -i {}/%6d.png {}'.format(os.path.join(ffmpeg_dir, "ffmpeg"), fps, dir, output))
-    retn = os.system('{} -r {} -f image2 -i {}/%6d.png {}'.format(os.path.join(ffmpeg_dir, "ffmpeg"), fps, dir, output))
+    print('{} -r {} -f image2 -i {}/%6d.png {}'.format(os.path.join(ffmpeg_dir,
+          "ffmpeg"), fps, dir, output))
+    retn = os.system('{} -r {} -f image2 -i {}/%6d.png {}'.format(
+        os.path.join(ffmpeg_dir, "ffmpeg"), fps, dir, output))
     if retn:
         error = "Error creating output video. Exiting."
     return error
 
-# if __name__ == '__main__':
+
+# combine frames to a video
+def combine_frames(pathIn, pathOut, fps):
+    frame_array = []
+    files = [f for f in os.listdir(
+        pathIn) if os.path.isfile(os.path.join(pathIn, f))]
+    # for sorting the file names properly
+    files.sort(key=lambda x: int(re.search(r'\d+', x).group()))
+    for i in range(len(files)):
+        filename = os.path.join(pathIn, files[i])
+        # reading each files
+        img = cv2.imread(filename)
+        height, width, layers = img.shape
+        size = (width, height)
+        # inserting the frames into an image array
+        frame_array.append(img)
+    out = cv2.VideoWriter(pathOut, cv2.VideoWriter_fourcc(*'DIVX'), fps, size)
+    for i in range(len(frame_array)):
+        # writing to a image array
+        out.write(frame_array[i])
+    out.release()

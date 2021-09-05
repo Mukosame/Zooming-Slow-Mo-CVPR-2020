@@ -30,7 +30,8 @@ def create_dataset(dataset_opt):
     if mode == 'Vimeo7':
         from data.Vimeo7_dataset import Vimeo7Dataset as D
     else:
-        raise NotImplementedError('Dataset [{:s}] is not recognized.'.format(mode))
+        raise NotImplementedError(
+            'Dataset [{:s}] is not recognized.'.format(mode))
     dataset = D(dataset_opt)
 
     logger = logging.getLogger('base')

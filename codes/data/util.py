@@ -11,7 +11,8 @@ import torch
 ####################
 
 ###################### get image path list ######################
-IMG_EXTENSIONS = ['.jpg', '.JPG', '.jpeg', '.JPEG', '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP']
+IMG_EXTENSIONS = ['.jpg', '.JPG', '.jpeg', '.JPEG',
+                  '.png', '.PNG', '.ppm', '.PPM', '.bmp', '.BMP']
 
 
 def is_image_file(filename):
@@ -33,7 +34,8 @@ def _get_paths_from_images(path):
 
 def _get_paths_from_lmdb(dataroot):
     '''get image path list from lmdb meta info'''
-    meta_info = pickle.load(open(os.path.join(dataroot, 'meta_info.pkl'), 'rb'))
+    meta_info = pickle.load(
+        open(os.path.join(dataroot, 'meta_info.pkl'), 'rb'))
     paths = meta_info['keys']
     sizes = meta_info['resolution']
     if len(sizes) == 1:
@@ -51,7 +53,8 @@ def get_image_paths(data_type, dataroot):
         elif data_type == 'img':
             paths = sorted(_get_paths_from_images(dataroot))
         else:
-            raise NotImplementedError('data_type [{:s}] is not recognized.'.format(data_type))
+            raise NotImplementedError(
+                'data_type [{:s}] is not recognized.'.format(data_type))
     return paths, sizes
 
 
@@ -105,6 +108,7 @@ def augment(img_list, hflip=True, rot=True):
         return img
 
     return [_augment(img) for img in img_list]
+
 
 def channel_convert(in_c, tar_type, img_list):
     # conversion among BGR, gray and y
@@ -203,6 +207,7 @@ def modcrop(img_in, scale):
         raise ValueError('Wrong img ndim: [{:d}].'.format(img.ndim))
     return img
 
+
 def cubic(x):
     absx = torch.abs(x)
     absx2 = absx**2
@@ -210,6 +215,7 @@ def cubic(x):
     return (1.5 * absx3 - 2.5 * absx2 + 1) * (
         (absx <= 1).type_as(absx)) + (-0.5 * absx3 + 2.5 * absx2 - 4 * absx + 2) * ((
             (absx > 1) * (absx <= 2)).type_as(absx))
+
 
 def calculate_weights_indices(in_length, out_length, scale, kernel, kernel_width, antialiasing):
     if (scale < 1) and (antialiasing):
@@ -265,6 +271,7 @@ def calculate_weights_indices(in_length, out_length, scale, kernel, kernel_width
     indices = indices + sym_len_s - 1
     return weights, indices, int(sym_len_s), int(sym_len_e)
 
+
 def imresize_np(img, scale, antialiasing=True):
     # Now the scale should be the same for H and W
     # input: img: Numpy, HWC BGR [0,1]
@@ -305,9 +312,12 @@ def imresize_np(img, scale, antialiasing=True):
     kernel_width = weights_H.size(1)
     for i in range(out_H):
         idx = int(indices_H[i][0])
-        out_1[i, :, 0] = img_aug[idx:idx + kernel_width, :, 0].transpose(0, 1).mv(weights_H[i])
-        out_1[i, :, 1] = img_aug[idx:idx + kernel_width, :, 1].transpose(0, 1).mv(weights_H[i])
-        out_1[i, :, 2] = img_aug[idx:idx + kernel_width, :, 2].transpose(0, 1).mv(weights_H[i])
+        out_1[i, :, 0] = img_aug[idx:idx + kernel_width,
+                                 :, 0].transpose(0, 1).mv(weights_H[i])
+        out_1[i, :, 1] = img_aug[idx:idx + kernel_width,
+                                 :, 1].transpose(0, 1).mv(weights_H[i])
+        out_1[i, :, 2] = img_aug[idx:idx + kernel_width,
+                                 :, 2].transpose(0, 1).mv(weights_H[i])
 
     # process W dimension
     # symmetric copying
@@ -328,8 +338,11 @@ def imresize_np(img, scale, antialiasing=True):
     kernel_width = weights_W.size(1)
     for i in range(out_W):
         idx = int(indices_W[i][0])
-        out_2[:, i, 0] = out_1_aug[:, idx:idx + kernel_width, 0].mv(weights_W[i])
-        out_2[:, i, 1] = out_1_aug[:, idx:idx + kernel_width, 1].mv(weights_W[i])
-        out_2[:, i, 2] = out_1_aug[:, idx:idx + kernel_width, 2].mv(weights_W[i])
+        out_2[:, i, 0] = out_1_aug[:, idx:idx +
+                                   kernel_width, 0].mv(weights_W[i])
+        out_2[:, i, 1] = out_1_aug[:, idx:idx +
+                                   kernel_width, 1].mv(weights_W[i])
+        out_2[:, i, 2] = out_1_aug[:, idx:idx +
+                                   kernel_width, 2].mv(weights_W[i])
 
     return out_2.numpy()

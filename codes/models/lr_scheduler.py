@@ -48,12 +48,14 @@ class CosineAnnealingLR_Restart(_LRScheduler):
             return self.base_lrs
         elif self.last_epoch in self.restarts:
             self.last_restart = self.last_epoch
-            self.T_max = self.T_period[self.restarts.index(self.last_epoch) + 1]
+            self.T_max = self.T_period[self.restarts.index(
+                self.last_epoch) + 1]
             weight = self.restart_weights[self.restarts.index(self.last_epoch)]
             return [group['initial_lr'] * weight for group in self.optimizer.param_groups]
         elif (self.last_epoch - self.last_restart - 1 - self.T_max) % (2 * self.T_max) == 0:
             return [
-                group['lr'] + (base_lr - self.eta_min) * (1 - math.cos(math.pi / self.T_max)) / 2
+                group['lr'] + (base_lr - self.eta_min) *
+                (1 - math.cos(math.pi / self.T_max)) / 2
                 for base_lr, group in zip(self.base_lrs, self.optimizer.param_groups)
             ]
         return [(1 + math.cos(math.pi * (self.last_epoch - self.last_restart) / self.T_max)) /
@@ -68,17 +70,18 @@ if __name__ == "__main__":
     ##############################
     # MultiStepLR_Restart
     ##############################
-    ## Original
+    # Original
     lr_steps = [200000, 400000, 600000, 800000]
     restarts = None
     restart_weights = None
 
-    ## two
-    lr_steps = [100000, 200000, 300000, 400000, 490000, 600000, 700000, 800000, 900000, 990000]
+    # two
+    lr_steps = [100000, 200000, 300000, 400000,
+                490000, 600000, 700000, 800000, 900000, 990000]
     restarts = [500000]
     restart_weights = [1]
 
-    ## four
+    # four
     lr_steps = [
         50000, 100000, 150000, 200000, 240000, 300000, 350000, 400000, 450000, 490000, 550000,
         600000, 650000, 700000, 740000, 800000, 850000, 900000, 950000, 990000
@@ -92,12 +95,12 @@ if __name__ == "__main__":
     ##############################
     # Cosine Annealing Restart
     ##############################
-    ## two
+    # two
     T_period = [500000, 500000]
     restarts = [500000]
     restart_weights = [1]
 
-    ## four
+    # four
     T_period = [250000, 250000, 250000, 250000]
     restarts = [250000, 500000, 750000]
     restart_weights = [1, 1, 1]
@@ -127,7 +130,8 @@ if __name__ == "__main__":
     plt.subplot(111)
     plt.ticklabel_format(style='sci', axis='x', scilimits=(0, 0))
     plt.title('Title', fontsize=16, color='k')
-    plt.plot(list(range(N_iter)), lr_l, linewidth=1.5, label='learning rate scheme')
+    plt.plot(list(range(N_iter)), lr_l, linewidth=1.5,
+             label='learning rate scheme')
     legend = plt.legend(loc='upper right', shadow=False)
     ax = plt.gca()
     labels = ax.get_xticks().tolist()

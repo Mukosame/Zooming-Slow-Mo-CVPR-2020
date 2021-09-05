@@ -62,7 +62,8 @@ class DCNv2(nn.Module):
         self.dilation = _pair(dilation)
         self.deformable_groups = deformable_groups
 
-        self.weight = nn.Parameter(torch.Tensor(out_channels, in_channels, *self.kernel_size))
+        self.weight = nn.Parameter(torch.Tensor(
+            out_channels, in_channels, *self.kernel_size))
         self.bias = nn.Parameter(torch.Tensor(out_channels))
         self.reset_parameters()
 
@@ -89,7 +90,8 @@ class DCN(DCNv2):
         super(DCN, self).__init__(in_channels, out_channels, kernel_size, stride, padding, dilation,
                                   deformable_groups)
 
-        channels_ = self.deformable_groups * 3 * self.kernel_size[0] * self.kernel_size[1]
+        channels_ = self.deformable_groups * 3 * \
+            self.kernel_size[0] * self.kernel_size[1]
         self.conv_offset_mask = nn.Conv2d(self.in_channels, channels_, kernel_size=self.kernel_size,
                                           stride=self.stride, padding=self.padding, bias=True)
         self.init_offset()
@@ -115,7 +117,8 @@ class DCN_sep(DCNv2):
         super(DCN_sep, self).__init__(in_channels, out_channels, kernel_size, stride, padding,
                                       dilation, deformable_groups)
 
-        channels_ = self.deformable_groups * 3 * self.kernel_size[0] * self.kernel_size[1]
+        channels_ = self.deformable_groups * 3 * \
+            self.kernel_size[0] * self.kernel_size[1]
         self.conv_offset_mask = nn.Conv2d(self.in_channels, channels_, kernel_size=self.kernel_size,
                                           stride=self.stride, padding=self.padding, bias=True)
         self.init_offset()
@@ -133,7 +136,8 @@ class DCN_sep(DCNv2):
 
         offset_mean = torch.mean(torch.abs(offset))
         if offset_mean > 100:
-            logger.warning('Offset mean is {}, larger than 100.'.format(offset_mean))
+            logger.warning(
+                'Offset mean is {}, larger than 100.'.format(offset_mean))
 
         mask = torch.sigmoid(mask)
         return dcn_v2_conv(input, offset, mask, self.weight, self.bias, self.stride, self.padding,
@@ -222,7 +226,8 @@ class DCNPooling(DCNv2Pooling):
             self.offset_mask_fc = nn.Sequential(
                 nn.Linear(self.pooled_size * self.pooled_size * self.output_dim,
                           self.deform_fc_dim), nn.ReLU(inplace=True),
-                nn.Linear(self.deform_fc_dim, self.deform_fc_dim), nn.ReLU(inplace=True),
+                nn.Linear(self.deform_fc_dim, self.deform_fc_dim), nn.ReLU(
+                    inplace=True),
                 nn.Linear(self.deform_fc_dim, self.pooled_size * self.pooled_size * 3))
             self.offset_mask_fc[4].weight.data.zero_()
             self.offset_mask_fc[4].bias.data.zero_()
@@ -249,7 +254,8 @@ class DCNPooling(DCNv2Pooling):
 
             # build mask and offset
             offset_mask = self.offset_mask_fc(roi.view(n, -1))
-            offset_mask = offset_mask.view(n, 3, self.pooled_size, self.pooled_size)
+            offset_mask = offset_mask.view(
+                n, 3, self.pooled_size, self.pooled_size)
             o1, o2, mask = torch.chunk(offset_mask, 3, dim=1)
             offset = torch.cat((o1, o2), dim=1)
             mask = torch.sigmoid(mask)

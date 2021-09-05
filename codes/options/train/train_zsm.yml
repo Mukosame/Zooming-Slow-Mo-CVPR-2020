@@ -4,7 +4,7 @@ use_tb_logger: false #true
 model: VideoSR_base
 distortion: sr
 scale: 4
-gpu_ids: [2]
+gpu_ids: [0, 1, 2, 3]
 
 #### datasets
 datasets:
@@ -16,13 +16,13 @@ datasets:
     border_mode: false
     dataroot_GT: /data/datasets/SR/vimeo_septuplet/vimeo7_train_GT.lmdb
     dataroot_LQ: /data/datasets/SR/vimeo_septuplet/vimeo7_train_LR7.lmdb
-    cache_keys: Vimeo7_train_keys.pkl 
+    cache_keys: Vimeo7_train_keys.pkl
 
     N_frames: 7
     use_shuffle: true
-    n_workers: 3  # per GPU
-    batch_size: 16 
-    GT_size: 128 
+    n_workers: 3 # per GPU
+    batch_size: 16
+    GT_size: 128
     LQ_size: 32
     use_flip: true
     use_rot: true
@@ -41,7 +41,7 @@ network_G:
 
 #### path
 path:
-  pretrain_model_G: ~ 
+  pretrain_model_G: ~
   strict_load: false #true #
   resume_state: ~
 

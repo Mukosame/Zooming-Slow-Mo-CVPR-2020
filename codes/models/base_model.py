@@ -8,7 +8,8 @@ from torch.nn.parallel import DistributedDataParallel
 class BaseModel():
     def __init__(self, opt):
         self.opt = opt
-        self.device = torch.device('cuda' if opt['gpu_ids'] is not None else 'cpu')
+        self.device = torch.device(
+            'cuda' if opt['gpu_ids'] is not None else 'cpu')
         self.is_train = opt['is_train']
         self.schedulers = []
         self.optimizers = []
@@ -45,20 +46,22 @@ class BaseModel():
         # get the initial lr, which is set by the scheduler
         init_lr_groups_l = []
         for optimizer in self.optimizers:
-            init_lr_groups_l.append([v['initial_lr'] for v in optimizer.param_groups])
+            init_lr_groups_l.append([v['initial_lr']
+                                    for v in optimizer.param_groups])
         return init_lr_groups_l
 
     def update_learning_rate(self, cur_iter, warmup_iter=-1):
         for scheduler in self.schedulers:
             scheduler.step()
-        #### set up warm up learning rate
+        # set up warm up learning rate
         if cur_iter < warmup_iter:
             # get initial lr for each group
             init_lr_g_l = self._get_init_lr()
             # modify warming-up learning rates
             warm_up_lr_l = []
             for init_lr_g in init_lr_g_l:
-                warm_up_lr_l.append([v / warmup_iter * cur_iter for v in init_lr_g])
+                warm_up_lr_l.append(
+                    [v / warmup_iter * cur_iter for v in init_lr_g])
             # set learning rate
             self._set_lr(warm_up_lr_l)
 
@@ -100,21 +103,25 @@ class BaseModel():
 
     def save_training_state(self, epoch, iter_step):
         '''Saves training state during training, which will be used for resuming'''
-        state = {'epoch': epoch, 'iter': iter_step, 'schedulers': [], 'optimizers': []}
+        state = {'epoch': epoch, 'iter': iter_step,
+                 'schedulers': [], 'optimizers': []}
         for s in self.schedulers:
             state['schedulers'].append(s.state_dict())
         for o in self.optimizers:
             state['optimizers'].append(o.state_dict())
         save_filename = '{}.state'.format(iter_step)
-        save_path = os.path.join(self.opt['path']['training_state'], save_filename)
+        save_path = os.path.join(
+            self.opt['path']['training_state'], save_filename)
         torch.save(state, save_path)
 
     def resume_training(self, resume_state):
         '''Resume the optimizers and schedulers for training'''
         resume_optimizers = resume_state['optimizers']
         resume_schedulers = resume_state['schedulers']
-        assert len(resume_optimizers) == len(self.optimizers), 'Wrong lengths of optimizers'
-        assert len(resume_schedulers) == len(self.schedulers), 'Wrong lengths of schedulers'
+        assert len(resume_optimizers) == len(
+            self.optimizers), 'Wrong lengths of optimizers'
+        assert len(resume_schedulers) == len(
+            self.schedulers), 'Wrong lengths of schedulers'
         for i, o in enumerate(resume_optimizers):
             self.optimizers[i].load_state_dict(o)
         for i, s in enumerate(resume_schedulers):

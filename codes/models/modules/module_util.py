@@ -77,5 +77,6 @@ def flow_warp(x, flow, interp_mode='bilinear', padding_mode='zeros'):
     vgrid_x = 2.0 * vgrid[:, :, :, 0] / max(W - 1, 1) - 1.0
     vgrid_y = 2.0 * vgrid[:, :, :, 1] / max(H - 1, 1) - 1.0
     vgrid_scaled = torch.stack((vgrid_x, vgrid_y), dim=3)
-    output = F.grid_sample(x, vgrid_scaled, mode=interp_mode, padding_mode=padding_mode)
+    output = F.grid_sample(
+        x, vgrid_scaled, mode=interp_mode, padding_mode=padding_mode)
     return output

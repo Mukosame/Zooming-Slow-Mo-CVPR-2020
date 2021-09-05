@@ -66,12 +66,14 @@ def check_zero_offset():
         print(input)
         print(output)
 
+
 def check_gradient_dconv():
 
     input = torch.rand(N, inC, inH, inW).cuda() * 0.01
     input.requires_grad = True
 
-    offset = torch.randn(N, deformable_groups * 2 * kW * kH, inH, inW).cuda() * 2
+    offset = torch.randn(N, deformable_groups * 2 *
+                         kW * kH, inH, inW).cuda() * 2
     # offset.data.zero_()
     # offset.data -= 0.5
     offset.requires_grad = True

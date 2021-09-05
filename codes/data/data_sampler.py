@@ -30,17 +30,20 @@ class DistIterSampler(Sampler):
     def __init__(self, dataset, num_replicas=None, rank=None, ratio=100):
         if num_replicas is None:
             if not dist.is_available():
-                raise RuntimeError("Requires distributed package to be available")
+                raise RuntimeError(
+                    "Requires distributed package to be available")
             num_replicas = dist.get_world_size()
         if rank is None:
             if not dist.is_available():
-                raise RuntimeError("Requires distributed package to be available")
+                raise RuntimeError(
+                    "Requires distributed package to be available")
             rank = dist.get_rank()
         self.dataset = dataset
         self.num_replicas = num_replicas
         self.rank = rank
         self.epoch = 0
-        self.num_samples = int(math.ceil(len(self.dataset) * ratio / self.num_replicas))
+        self.num_samples = int(
+            math.ceil(len(self.dataset) * ratio / self.num_replicas))
         self.total_size = self.num_samples * self.num_replicas
 
     def __iter__(self):
